@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import Collapse from 'material-ui/transitions/Collapse';
+import List, { ListItem, ListItemIcon, ListItemText } from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import Collapse from '@material-ui/core/transitions/Collapse';
 import ExpandLessIcon from 'mdi-material-ui/ChevronUp';
 import ExpandMoreIcon from 'mdi-material-ui/ChevronDown';
 import { Components, registerComponent, withCurrentUser } from 'meteor/vulcan:core';
@@ -11,7 +11,7 @@ import LockIcon from 'mdi-material-ui/Lock';
 import UsersIcon from 'mdi-material-ui/AccountMultiple';
 import ThemeIcon from 'mdi-material-ui/Palette';
 import HomeIcon from 'mdi-material-ui/Home';
-import withStyles from 'material-ui/styles/withStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import Users from 'meteor/vulcan:users';
 
 
