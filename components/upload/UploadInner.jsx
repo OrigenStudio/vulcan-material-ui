@@ -1,76 +1,73 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Components, registerComponent, getComponent } from 'meteor/vulcan:lib';
-import Dropzone from 'react-dropzone';
-import { withStyles } from '@material-ui/core/styles';
-import { FormattedMessage } from 'meteor/vulcan:i18n';
-import { FormControl, FormLabel, FormHelperText } from '@material-ui/core/Form';
-
-
+import React from "react";
+import PropTypes from "prop-types";
+import { Components, registerComponent, getComponent } from "meteor/vulcan:lib";
+import Dropzone from "react-dropzone";
+import { withStyles } from "@material-ui/core/styles";
+import { FormattedMessage } from "meteor/vulcan:i18n";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormHelperText from "@material-ui/core/FormHelperText"
 /*
 
 Material UI GUI for Cloudinary Image Upload component
 
 */
 
-
 const styles = theme => ({
-  
   root: {},
-  
+
   label: {},
-  
+
   uploadField: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing.unit
   },
-  
+
   dropzoneBase: {
     borderWidth: 3,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
     borderColor: theme.palette.background[900],
     backgroundColor: theme.palette.background[100],
     color: theme.palette.common.lightBlack,
-    padding: '30px 60px',
-    transition: 'all 0.5s',
-    cursor: 'pointer',
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: "30px 60px",
+    transition: "all 0.5s",
+    cursor: "pointer",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     '&[aria-disabled="false"]:hover': {
       color: theme.palette.common.midBlack,
-      borderColor: theme.palette.background['A200'],
+      borderColor: theme.palette.background["A200"]
     }
   },
-  
+
   dropzoneActive: {
-    borderStyle: 'solid',
-    borderColor: theme.palette.status.info,
+    borderStyle: "solid",
+    borderColor: theme.palette.status.info
   },
-  
+
   dropzoneReject: {
-    borderStyle: 'solid',
-    borderColor: theme.palette.status.danger,
+    borderStyle: "solid",
+    borderColor: theme.palette.status.danger
   },
-  
+
   uploadState: {},
-  
+
   uploadImages: {
     border: `1px solid ${theme.palette.background[500]}`,
     backgroundColor: theme.palette.background[100],
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     paddingTop: theme.spacing.unit,
     paddingRight: theme.spacing.unit * 0.5,
     paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 0.5,
-  },
+    paddingLeft: theme.spacing.unit * 0.5
+  }
 });
 
-
-const UploadInner = (props) => {
+const UploadInner = props => {
   const {
     uploading,
     images,
@@ -85,50 +82,45 @@ const UploadInner = (props) => {
     clearImage,
     classes
   } = props;
-  
-  const UploadImage = getComponent(options.uploadImageComponentName || 'UploadImage');
-  
+
+  const UploadImage = getComponent(
+    options.uploadImageComponentName || "UploadImage"
+  );
+
   return (
     <FormControl component="fieldset" fullWidth={true} className={classes.root}>
-      
       <FormLabel component="legend" className={classes.label}>
         {label}
       </FormLabel>
-      {
-        help &&
-        
-        <FormHelperText>{help}</FormHelperText>
-      }
+      {help && <FormHelperText>{help}</FormHelperText>}
       <div className={classes.uploadField}>
-        {
-          (disabled && !enableMultiple)
-            ?
-            null
-            :
-            <Dropzone
-              style={options.dropzoneStyle}
-              multiple={enableMultiple}
-              onDrop={onDrop}
-              accept="image/*"
-              className={classes.dropzoneBase}
-              activeClassName={classes.dropzoneActive}
-              rejectClassName={classes.dropzoneReject}
-              disabled={disabled}
-            >
-              <div>
-                <FormattedMessage id={`upload.${disabled ? 'maxReached' : 'prompt'}`}
-                                  values={{ maxCount }}/>
+        {disabled && !enableMultiple ? null : (
+          <Dropzone
+            style={options.dropzoneStyle}
+            multiple={enableMultiple}
+            onDrop={onDrop}
+            accept="image/*"
+            className={classes.dropzoneBase}
+            activeClassName={classes.dropzoneActive}
+            rejectClassName={classes.dropzoneReject}
+            disabled={disabled}
+          >
+            <div>
+              <FormattedMessage
+                id={`upload.${disabled ? "maxReached" : "prompt"}`}
+                values={{ maxCount }}
+              />
+            </div>
+            {uploading && (
+              <div className="upload-uploading">
+                <span>
+                  <FormattedMessage id={`upload.uploading`} />
+                </span>
               </div>
-              {uploading && (
-                <div className="upload-uploading">
-                  <span>
-                    <FormattedMessage id={`upload.uploading`}/>
-                  </span>
-                </div>
-              )}
-            </Dropzone>
-        }
-        
+            )}
+          </Dropzone>
+        )}
+
         {!!images.length && (
           <div className={classes.uploadState}>
             <div className={classes.uploadImages}>
@@ -151,11 +143,9 @@ const UploadInner = (props) => {
           </div>
         )}
       </div>
-    
     </FormControl>
   );
 };
-
 
 UploadInner.propTypes = {
   uploading: PropTypes.bool,
@@ -169,11 +159,9 @@ UploadInner.propTypes = {
   onDrop: PropTypes.func.isRequired,
   isDeleted: PropTypes.func.isRequired,
   clearImage: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
+UploadInner.displayName = "UploadInnerMui";
 
-UploadInner.displayName = 'UploadInnerMui';
-
-
-registerComponent('UploadInner', UploadInner, [withStyles, styles]);
+registerComponent("UploadInner", UploadInner, [withStyles, styles]);

@@ -5,7 +5,7 @@ import ComponentMixin from './mixins/component';
 import withStyles from '@material-ui/core/styles/withStyles';
 import MuiFormControl from './MuiFormControl';
 import MuiFormHelper from './MuiFormHelper';
-import { FormControlLabel, } from '@material-ui/core/Form';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio, { RadioGroup } from '@material-ui/core/Radio';
 import classNames from 'classnames';
 

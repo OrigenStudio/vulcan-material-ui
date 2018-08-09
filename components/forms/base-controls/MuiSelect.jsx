@@ -7,7 +7,7 @@ import MuiFormHelper from './MuiFormHelper';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
 import { MenuItem, MenuList } from '@material-ui/core/Menu';
-import ListSubheader from '@material-ui/core/List/ListSubheader';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import StartAdornment, { hideStartAdornment } from './StartAdornment';
 import EndAdornment from './EndAdornment';
 import _isArray from 'lodash/isArray';

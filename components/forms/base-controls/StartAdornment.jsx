@@ -4,7 +4,7 @@ import { instantiateComponent } from 'meteor/vulcan:core';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { InputAdornment } from '@material-ui/core/Input';
 import IconButton from '@material-ui/core/IconButton';
-import OpenInNewIcon from 'mdi-material-ui/OpenInNew';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { styles } from './EndAdornment';
 
 
