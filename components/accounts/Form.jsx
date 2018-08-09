@@ -1,17 +1,16 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Components, registerComponent } from 'meteor/vulcan:core';
+import withStyles from 'material-ui/styles/withStyles';
 
 
-export class AccountsForm extends PureComponent {
-  
-  
-  /*constructor (props) {
-    super(props);
-    
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }*/
+const styles = theme => ({
+  messages: theme.utils.errorMessage,
+});
+
+
+export class AccountsForm extends Component {
   
   
   componentDidMount () {
@@ -24,13 +23,6 @@ export class AccountsForm extends PureComponent {
   }
   
   
-  /*handleSubmit (event) {
-    event.preventDefault();
-    const buttons = this.props.buttons;
-    buttons.signIn.onClick(event);
-  }*/
-  
-  
   render () {
     const {
       oauthServices,
@@ -38,19 +30,20 @@ export class AccountsForm extends PureComponent {
       buttons,
       messages,
       ready = true,
-      className
+      className,
+      classes,
     } = this.props;
-    
+  
     return (
       <form ref={(ref) => this.form = ref}
             className={classNames(className, 'accounts-ui', { 'ready': ready, })}
             noValidate
       >
-        <Components.AccountsFields fields={fields}/>
-        <Components.AccountsButtons buttons={buttons}/>
+        <Components.AccountsFields fields={fields} messages={messages}/>
+        <Components.AccountsButtons buttons={{...buttons}}/>
         <Components.AccountsPasswordOrService oauthServices={oauthServices}/>
         <Components.AccountsSocialButtons oauthServices={oauthServices}/>
-        <Components.AccountsFormMessages messages={messages}/>
+        <Components.AccountsFormMessages messages={messages} className={classes.messages}/>
       </form>
     );
   }
@@ -64,11 +57,12 @@ AccountsForm.propTypes = {
   fields: PropTypes.object.isRequired,
   buttons: PropTypes.object.isRequired,
   error: PropTypes.string,
-  ready: PropTypes.bool
+  ready: PropTypes.bool,
+  classes: PropTypes.object.isRequired,
 };
 
 
-AccountsForm.displayName = 'ShopsSuppliers';
+AccountsForm.displayName = 'AccountsForm';
 
 
-registerComponent('AccountsForm', AccountsForm);
+registerComponent('AccountsForm', AccountsForm, [withStyles, styles]);

@@ -4,6 +4,14 @@ import { replaceComponent } from 'meteor/vulcan:core';
 import TextField from 'material-ui/TextField';
 
 
+const autocompleteValues = {
+  'username': 'username',
+  'usernameOrEmail': 'email',
+  'email': 'email',
+  'password': 'current-password'
+};
+
+
 export class AccountsField extends PureComponent {
   
   
@@ -52,14 +60,27 @@ export class AccountsField extends PureComponent {
       className = 'field',
       defaultValue = '',
       autoFocus,
-      message,
+      messages,
     } = this.props;
+    let { message } = this.props;
     const { mount = true } = this.state;
     
     if (type === 'notice') {
       return <div className={className}>{label}</div>;
     }
+  
+    const autoComplete = autocompleteValues[id];
     
+    if (messages && messages.find && typeof id === 'string') {
+      const foundMessage = messages.find(element => {
+        if (typeof element.field !== 'string') return false;
+        return id.toLowerCase().indexOf(element.field.toLowerCase()) > -1;
+      });
+      if (foundMessage) {
+        message = foundMessage;
+      }
+    }
+  
     return (
       mount &&
       
@@ -67,11 +88,13 @@ export class AccountsField extends PureComponent {
         <TextField
           id={id}
           type={type}
-          label={label}
+          inputRef={ref => { this.input = ref; }}
+          onChange={onChange}
           placeholder={hint}
           defaultValue={defaultValue}
+          autoComplete={autoComplete }
+          label={label}
           autoFocus={autoFocus}
-          onChange={onChange}
           required={required}
           error={!!message}
           helperText={message && message.message}

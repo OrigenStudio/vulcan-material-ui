@@ -5,8 +5,8 @@ import withStyles from 'material-ui/styles/withStyles';
 import Collapse from 'material-ui/transitions/Collapse';
 import Divider from 'material-ui/Divider';
 import Typography from 'material-ui/Typography';
-import ExpandLessIcon from 'material-ui-icons/ExpandLess';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import ExpandLessIcon from 'mdi-material-ui/ChevronUp';
+import ExpandMoreIcon from 'mdi-material-ui/ChevronDown';
 
 
 const styles = theme => ({
@@ -17,7 +17,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * -3,
     marginRight: theme.spacing.unit * -3,
   },
-  head: {
+  subheading: {
     marginTop: theme.spacing.unit * 5,
     position: 'relative',
     cursor: 'pointer',
@@ -68,11 +68,11 @@ class FormGroup extends PureComponent {
     const { classes } = this.props;
     
     return (
-      <div className={classes.head} onClick={this.toggle}>
+      <div className={classes.subheading} onClick={this.toggle}>
         
         <Divider className={classes.divider}/>
         
-        <Typography className={classes.typography} type="subheading" gutterBottom>
+        <Typography className={classes.typography} variant="subheading" gutterBottom>
           <div>
             {this.props.label}
           </div>
@@ -108,7 +108,7 @@ class FormGroup extends PureComponent {
             this.renderHeading()
         }
   
-        <Collapse classes={{entered: classes.entered}} in={collapseIn} transitionDuration="auto">
+        <Collapse classes={{entered: classes.entered}} in={collapseIn}>
           {
             this.props.fields.map(field =>
               <Components.FormComponent key={field.name}

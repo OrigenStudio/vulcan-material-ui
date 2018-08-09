@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Components, replaceComponent, withCurrentUser, withList } from 'meteor/vulcan:core';
+import { Components, registerComponent, replaceComponent, withCurrentUser, withList } from 'meteor/vulcan:core';
 import { intlShape } from 'meteor/vulcan:i18n';
 import withStyles from 'material-ui/styles/withStyles';
-import Table, { TableBody, TableHead, TableRow, TableCell } from 'material-ui/Table';
+import Table, { TableBody, TableHead, TableRow, TableCell, TableFooter } from 'material-ui/Table';
 import { getFieldValue } from './Card';
 import _assign from 'lodash/assign';
 import classNames from 'classnames';
@@ -14,7 +14,7 @@ import classNames from 'classnames';
 Datatable Component
 
 */
-const baseStyles = {
+const baseStyles = theme => ({
   root: {
     position: 'relative',
   },
@@ -23,14 +23,22 @@ const baseStyles = {
     top: '-8px',
     right: 0,
   },
+  search: {
+    marginBottom: theme.spacing.unit * 8,
+  },
   table: {},
+  denseTable: {},
+  denserTable: {},
+  flatTable: {},
   tableHead: {},
   tableBody: {},
+  tableFooter: {},
   tableRow: {},
   tableCell: {},
+  clickRow: {},
   editCell: {},
   editButton: {}
-};
+});
 
 
 class Datatable extends PureComponent {
@@ -52,53 +60,60 @@ class Datatable extends PureComponent {
   }
   
   render () {
-    
-    const {
-      className,
-      collection,
-      options,
-      showSearch,
-      showNew,
-      currentUser,
-      classes,
-    } = this.props;
-    
-    const listOptions = {
-      collection: collection,
-      ...options,
-    };
-    
-    const DatatableWithList = withList(listOptions)(Components.DatatableContents);
-    
-    return (
-      <div className={classNames('datatable', `datatable-${collection._name}`, classes.root,
-        className)}>
-        
-        {
-          showSearch &&
-          
-          <Components.SearchInput value={this.state.query}
-                                  updateQuery={this.updateQuery}
-          />
-        }
-        {
-          showNew &&
-          
-          <Components.NewButton collection={collection}
-                                fab={true}
-                                color="primary"
-                                className={classes.addButton}
-          />
-        }
-        
-        
-        <DatatableWithList {...this.props}
-                           terms={{ query: this.state.query }}
-                           currentUser={currentUser}
-        />
+    if (this.props.data) {
       
-      </div>
-    );
+      return <Components.DatatableContents {...this.props} results={this.props.data}/>;
+      
+    } else {
+      
+      const {
+        className,
+        collection,
+        options,
+        showSearch,
+        showNew,
+        currentUser,
+        classes,
+      } = this.props;
+      
+      const listOptions = {
+        collection: collection,
+        ...options,
+      };
+      
+      const DatatableWithList = withList(listOptions)(Components.DatatableContents);
+      
+      return (
+        <div className={classNames('datatable', `datatable-${collection._name}`, classes.root,
+          className)}>
+          
+          {
+            showSearch &&
+            
+            <Components.SearchInput value={this.state.query}
+                                    updateQuery={this.updateQuery}
+                                    className={classes.search}
+            />
+          }
+          {
+            showNew &&
+            
+            <Components.NewButton collection={collection}
+                                  variant="fab"
+                                  color="primary"
+                                  className={classes.addButton}
+            />
+          }
+          
+          
+          <DatatableWithList {...this.props}
+                             terms={{ query: this.state.query }}
+                             currentUser={currentUser}
+          />
+        
+        </div>
+      );
+    }
   }
 }
 
@@ -109,18 +124,25 @@ Datatable.propTypes = {
   options: PropTypes.object,
   columns: PropTypes.array,
   showEdit: PropTypes.bool,
+  editComponent: PropTypes.func,
   showNew: PropTypes.bool,
   showSearch: PropTypes.bool,
   emptyState: PropTypes.node,
   currentUser: PropTypes.object,
   classes: PropTypes.object,
+  data: PropTypes.array,
+  footerData: PropTypes.array,
+  dense: PropTypes.string,
+  queryDataRef: PropTypes.func,
+  rowClass: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  handleRowClick: PropTypes.func,
+  intlNamespace: PropTypes.string,
 };
 
 
 Datatable.defaultProps = {
   showEdit: true,
   showSearch: true,
-  classes: {},
 };
 
 
@@ -132,11 +154,14 @@ replaceComponent('Datatable', Datatable, withCurrentUser, [withStyles, baseStyle
 DatatableContents Component
 
 */
-const datatableContentsStyles = theme => (_assign({}, baseStyles, {
+const datatableContentsStyles = theme => (_assign({}, baseStyles(theme), {
   table: {
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit * 3,
   },
+  denseTable: theme.utils.denseTable,
+  flatTable: theme.utils.flatTable,
+  denserTable: theme.utils.denserTable,
 }));
 
 
@@ -149,10 +174,18 @@ const DatatableContents = ({
                              count,
                              totalCount,
                              networkStatus,
+                             refetch,
                              showEdit,
+                             editComponent,
                              emptyState,
                              currentUser,
                              classes,
+                             footerData,
+                             dense,
+                             queryDataRef,
+                             rowClass,
+                             handleRowClick,
+                             intlNamespace,
                            }) => {
   
   if (loading) {
@@ -161,9 +194,13 @@ const DatatableContents = ({
     return emptyState || null;
   }
   
+  if (queryDataRef) queryDataRef(this.props);
+  
+  const denseClass = dense && classes[dense + 'Table'];
+  
   return (
-    <div className="datatable-list">
-      <Table className={classes.table}>
+    <React.Fragment>
+      <Table className={classNames(classes.table, denseClass)}>
         
         <TableHead className={classes.tableHead}>
           <TableRow className={classes.tableRow}>
@@ -172,12 +209,14 @@ const DatatableContents = ({
                 (column, index) =>
                   <Components.DatatableHeader key={index}
                                               collection={collection}
+                                              intlNamespace={intlNamespace}
                                               column={column}
                                               classes={classes}
-                  />)
+                  />
+              )
             }
             {
-              showEdit &&
+              (showEdit || editComponent) &&
               
               <TableCell className={classes.tableCell}/>
             }
@@ -194,13 +233,40 @@ const DatatableContents = ({
                   <Components.DatatableRow collection={collection}
                                            columns={columns}
                                            document={document}
+                                           refetch={refetch}
                                            key={index}
                                            showEdit={showEdit}
+                                           editComponent={editComponent}
                                            currentUser={currentUser}
                                            classes={classes}
+                                           rowClass={rowClass}
+                                           handleRowClick={handleRowClick}
                   />)
             }
           </TableBody>
+        }
+        
+        {
+          footerData &&
+          
+          <TableFooter className={classes.tableFooter}>
+            <TableRow className={classes.tableRow}>
+              {
+                _.sortBy(columns, column => column.order).map(
+                  (column, index) =>
+                    <TableCell key={index} className={classNames(classes.tableCell, column.footerClass)}>
+                      {footerData[index]}
+                    </TableCell>
+                )
+              }
+              {
+                (showEdit || editComponent) &&
+                
+                <TableCell className={classes.tableCell}/>
+              }
+            </TableRow>
+          </TableFooter>
+          
         }
       
       </Table>
@@ -211,7 +277,7 @@ const DatatableContents = ({
                            loadMore={loadMore}
                            networkStatus={networkStatus}
       />
-    </div>
+    </React.Fragment>
   );
 };
 
@@ -224,23 +290,38 @@ replaceComponent('DatatableContents', DatatableContents, [withStyles, datatableC
 DatatableHeader Component
 
 */
-const DatatableHeader = ({ collection, column, classes }, { intl }) => {
-  const schema = collection.simpleSchema()._schema;
+const DatatableHeader = ({ collection, intlNamespace, column, classes }, { intl }) => {
   const columnName = typeof column === 'string' ? column : column.name;
+  let formattedLabel = '';
   
-  /*
-  use either:
+  if (collection) {
+    const schema = collection.simpleSchema()._schema;
+    
+    /*
+    use either:
+
+    1. the column name translation
+    2. the column name label in the schema (if the column name matches a schema field)
+    3. the raw column name.
+    */
+    formattedLabel = typeof columnName === 'string' ?
+      intl.formatMessage({
+        id: `${collection._name}.${columnName}`,
+        defaultMessage: schema[columnName] ? schema[columnName].label : columnName
+      }) :
+      '';
+  } else if (intlNamespace) {
+    formattedLabel = typeof columnName === 'string' ?
+      intl.formatMessage({
+        id: `${intlNamespace}.${columnName}`,
+        defaultMessage: columnName
+      }) :
+      '';
+  } else {
+    formattedLabel = intl.formatMessage({ id: columnName, defaultMessage: columnName });
+  }
   
-  1. the column name translation
-  2. the column name label in the schema (if the column name matches a schema field)
-  3. the raw column name.
-  */
-  const formattedLabel = intl.formatMessage({
-    id: `${collection._name}.${columnName}`,
-    defaultMessage: schema[columnName] ? schema[columnName].label : columnName
-  });
-  
-  return <TableCell className={classes.tableCell}>{formattedLabel}</TableCell>;
+  return <TableCell className={classNames(classes.tableCell, column.headerClass)}>{formattedLabel}</TableCell>;
 };
 
 
@@ -257,16 +338,15 @@ replaceComponent('DatatableHeader', DatatableHeader);
 DatatableRow Component
 
 */
-const datatableRowStyles = theme => (_assign({}, baseStyles, {
+const datatableRowStyles = theme => (_assign({}, baseStyles(theme), {
+  clickRow: {
+    cursor: 'pointer',
+  },
   editCell: {
     paddingTop: '0 !important',
     paddingBottom: '0 !important',
     textAlign: 'right',
   },
-  editButton: {
-    width: '40px',
-    height: '40px',
-  }
 }));
 
 
@@ -274,13 +354,27 @@ const DatatableRow = ({
                         collection,
                         columns,
                         document,
+                        refetch,
                         showEdit,
+                        editComponent,
                         currentUser,
-                        classes
+                        rowClass,
+                        handleRowClick,
+                        classes,
                       }, { intl }) => {
   
+  const EditComponent = editComponent;
+  
+  if (typeof rowClass === 'function') {
+    rowClass = rowClass(document);
+  }
+  
   return (
-    <TableRow className={classNames('datatable-item', classes.tableRow)}>
+    <TableRow
+      className={classNames('datatable-item', classes.tableRow, rowClass, handleRowClick && classes.clickRow)}
+      onClick={handleRowClick && (event => handleRowClick(event, document))}
+      hover
+    >
       
       {
         _.sortBy(columns, column => column.order).map(
@@ -294,13 +388,22 @@ const DatatableRow = ({
       }
       
       {
-        showEdit &&
+        (showEdit || editComponent) &&
         
         <TableCell className={classes.editCell}>
-          <Components.EditButton collection={collection}
-                                 document={document}
-                                 buttonClasses={{button: classes.editButton}}
-          />
+          {
+            EditComponent &&
+            
+            <EditComponent collection={collection} document={document} refetch={refetch}/>
+          }
+          {
+            showEdit &&
+            
+            <Components.EditButton collection={collection}
+                                   document={document}
+                                   buttonClasses={{ button: classes.editButton }}
+            />
+          }
         </TableCell>
       }
     
@@ -319,23 +422,6 @@ DatatableRow.contextTypes = {
 
 /*
 
-DatatableEditForm Component
-
-*/
-const DatatableEditForm = ({ collection, document, closeModal }) =>
-  <Components.SmartForm
-    collection={collection}
-    documentId={document && document._id}
-    showRemove={true}
-    successCallback={document => {closeModal();}}
-  />;
-
-
-replaceComponent('DatatableEditForm', DatatableEditForm);
-
-
-/*
-
 DatatableCell Component
 
 */
@@ -344,14 +430,17 @@ const DatatableCell = ({ column, document, currentUser, classes }) => {
     Components[column.componentName] ||
     Components.DatatableDefaultCell;
   
-  const columnName = column.name || column;
+  const columnName = typeof column === 'string' ? column : column.name;
+  const className = typeof columnName === 'string' ?
+    `datatable-item-${columnName.toLowerCase()}` :
+    '';
   
   return (
-    <TableCell
-      className={classNames(classes.tableCell, `datatable-item-${columnName.toLowerCase()}`)}>
+    <TableCell className={classNames(classes.tableCell, className)}>
       <Component column={column}
                  document={document}
-                 currentUser={currentUser}/>
+                 currentUser={currentUser}
+      />
     </TableCell>
   );
 };

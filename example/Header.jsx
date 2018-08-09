@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
-import MenuIcon from 'material-ui-icons/Menu';
 import Typography from 'material-ui/Typography';
-import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
+import MenuIcon from 'mdi-material-ui/Menu';
+import ChevronLeftIcon from 'mdi-material-ui/ChevronLeft';
 import { withStyles } from 'material-ui/styles';
 import { getSetting, Components, registerComponent } from 'meteor/vulcan:core';
 import classNames from 'classnames';
@@ -56,34 +56,27 @@ const Header = (props, context) => {
   const isSideNavOpen = props.isSideNavOpen;
   const toggleSideNav = props.toggleSideNav;
   
-  const logoUrl = getSetting('logoUrl');
   const siteTitle = getSetting('title', 'My App');
-  const tagline = getSetting('tagline');
   
   return (
     <AppBar className={classNames(classes.appBar, isSideNavOpen && classes.appBarShift)}>
       <Toolbar className={classes.toolbar}>
         
         <IconButton
-          color="contrast"
           aria-label="open drawer"
           onClick={e => toggleSideNav()}
           className={classNames(classes.menuButton)}
+          color="inherit"
         >
           {isSideNavOpen ? <ChevronLeftIcon/> : <MenuIcon/>}
         </IconButton>
         
         <div className={classNames(classes.headerMid)}>
-          <Components.Logo logoUrl={logoUrl} siteTitle={siteTitle}/>
-          {
-            tagline
-            
-            &&
-            
-            <Typography type="title" color="inherit" className="tagline">
-              {tagline}
+          
+            <Typography variant="title" color="inherit" className="tagline">
+              {siteTitle}
             </Typography>
-          }
+
         </div>
         
       </Toolbar>

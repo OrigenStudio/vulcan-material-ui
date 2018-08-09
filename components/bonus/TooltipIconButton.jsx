@@ -25,33 +25,37 @@ const styles = theme => ({
 const TooltipIconButton = (props, { intl }) => {
   
   const {
+    title,
     titleId,
+    placement,
     icon,
+    className,
     classes,
     theme,
     buttonRef,
-    fab,
+    variant,
     ...properties
   } = props;
   
-  const title = intl.formatMessage({ id: titleId });
+  const titleText = props.title || intl.formatMessage({ id: titleId });
   const slug = Utils.slugify(titleId);
   
   return (
-    <Tooltip classes={{ tooltip: classes.tooltip }}
+    <Tooltip className={className}
+             classes={{ tooltip: classes.tooltip }}
              id={`tooltip-${slug}`}
-             title={title}
-             placement="bottom"
+             title={titleText}
+             placement={placement}
              enterDelay={theme.utils.tooltipEnterDelay}
     >
       <div className={classes.buttonWrap}>
         {
-          fab
+          variant === 'fab'
             
             ?
             
             <Button className={classNames(classes.button, slug)}
-                    fab
+                    variant="fab"
                     aria-label={title}
                     ref={buttonRef}
                     {...properties}
@@ -77,12 +81,20 @@ const TooltipIconButton = (props, { intl }) => {
 
 
 TooltipIconButton.propTypes = {
-  titleId: PropTypes.string.isRequired,
+  title: PropTypes.node,
+  titleId: PropTypes.string,
+  placement: PropTypes.string,
   icon: PropTypes.node.isRequired,
+  className: PropTypes.string,
   classes: PropTypes.object,
   buttonRef: PropTypes.func,
-  fab: PropTypes.bool,
+  variant: PropTypes.string,
   theme: PropTypes.object,
+};
+
+
+TooltipIconButton.defaultProps = {
+  placement: 'bottom',
 };
 
 
