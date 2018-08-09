@@ -8,7 +8,7 @@ import ExpandLessIcon from '@material-ui/icons/ArrowDropUp';
 import ExpandMoreIcon from '@material-ui/icons/ArrowDropDown';
 import { Components, registerComponent, withCurrentUser } from 'meteor/vulcan:core';
 import LockIcon from '@material-ui/icons/Lock';
-import UsersIcon from '@material-ui/icons/AccountMultiple';
+import UsersIcon from '@material-ui/icons/SupervisorAccount';
 import ThemeIcon from '@material-ui/icons/Palette';
 import HomeIcon from '@material-ui/icons/Home';
 import withStyles from '@material-ui/core/styles/withStyles';
