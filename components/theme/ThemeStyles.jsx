@@ -173,8 +173,8 @@ const ThemeStyles = ({ theme, classes }) => {
           </Typography>
         </Paper>
       </Grid>
-      
-      <Grid item xs={12} sm={6} md={3}>
+      {/* FIX BUG */}
+      {/* <Grid item xs={12} sm={6} md={3}>
         {
           getColorGroup({
             theme,
@@ -216,7 +216,7 @@ const ThemeStyles = ({ theme, classes }) => {
             showAltPalette: true,
           })
         }
-      </Grid>
+      </Grid> */}
 
     </Grid>
   );
