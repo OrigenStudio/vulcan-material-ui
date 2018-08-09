@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { instantiateComponent } from 'meteor/vulcan:core';
-import withStyles from 'material-ui/styles/withStyles';
-import { InputAdornment } from 'material-ui/Input';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from 'mdi-material-ui/CloseCircle';
+import withStyles from '@material-ui/core/styles/withStyles';
+import { InputAdornment } from '@material-ui/core/Input';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Cancel';
 import classNames from 'classnames';
 
 

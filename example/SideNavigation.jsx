@@ -1,102 +1,119 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { browserHistory } from 'react-router';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import Collapse from 'material-ui/transitions/Collapse';
-import ExpandLessIcon from 'mdi-material-ui/ChevronUp';
-import ExpandMoreIcon from 'mdi-material-ui/ChevronDown';
-import { Components, registerComponent, withCurrentUser } from 'meteor/vulcan:core';
-import LockIcon from 'mdi-material-ui/Lock';
-import UsersIcon from 'mdi-material-ui/AccountMultiple';
-import ThemeIcon from 'mdi-material-ui/Palette';
-import HomeIcon from 'mdi-material-ui/Home';
-import withStyles from 'material-ui/styles/withStyles';
-import Users from 'meteor/vulcan:users';
-
+import React from "react";
+import PropTypes from "prop-types";
+import { browserHistory } from "react-router";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import Collapse from "@material-ui/core/Collapse";
+import ExpandLessIcon from "@material-ui/icons/ArrowDropUp";
+import ExpandMoreIcon from "@material-ui/icons/ArrowDropDown";
+import { registerComponent, withCurrentUser } from "meteor/vulcan:core";
+import LockIcon from "@material-ui/icons/Lock";
+import UsersIcon from "@material-ui/icons/SupervisorAccount";
+import ThemeIcon from "@material-ui/icons/Palette";
+import HomeIcon from "@material-ui/icons/Home";
+import withStyles from "@material-ui/core/styles/withStyles";
 
 const styles = theme => ({
   root: {},
   nested: {
-    paddingLeft: theme.spacing.unit * 4,
-  },
+    paddingLeft: theme.spacing.unit * 4
+  }
 });
-
 
 class SideNavigation extends React.Component {
   state = {
     isOpen: { admin: false }
   };
-  
-  toggle = (item) => {
+
+  toggle = item => {
     const newState = { isOpen: {} };
     newState.isOpen[item] = !this.state.isOpen[item];
     this.setState(newState);
   };
-  
-  render () {
-    const currentUser = this.props.currentUser;
+
+  render() {
+    // const currentUser = this.props.currentUser;
     const classes = this.props.classes;
     const isOpen = this.state.isOpen;
-    
+
     return (
       <div className={classes.root}>
-        
         <List>
-          <ListItem button onClick={() => {browserHistory.push('/');}}>
+          <ListItem
+            button
+            onClick={() => {
+              browserHistory.push("/");
+            }}
+          >
             <ListItemIcon>
-              <HomeIcon/>
+              <HomeIcon />
             </ListItemIcon>
-            <ListItemText inset primary="Home"/>
+            <ListItemText inset primary="Home" />
           </ListItem>
         </List>
-        
-        {
-          Users.isAdmin(currentUser) &&
-          
+
+        {Users.isAdmin(currentUser) && (
           <div>
-            <Divider/>
+            <Divider />
             <List>
-              <ListItem button onClick={e => this.toggle('admin')}>
+              <ListItem button onClick={e => this.toggle("admin")}>
                 <ListItemIcon>
-                  <LockIcon/>
+                  <LockIcon />
                 </ListItemIcon>
-                <ListItemText primary="Admin"/>
-                {isOpen.admin ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
+                <ListItemText primary="Admin" />
+                {isOpen.admin ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </ListItem>
-              <Collapse in={isOpen.admin} transitionduration="auto" unmountOnExit>
-                <ListItem button className={classes.nested}
-                          onClick={() => {browserHistory.push('/admin');}}>
+              <Collapse
+                in={isOpen.admin}
+                transitionduration="auto"
+                unmountOnExit
+              >
+                <ListItem
+                  button
+                  className={classes.nested}
+                  onClick={() => {
+                    browserHistory.push("/admin");
+                  }}
+                >
                   <ListItemIcon>
-                    <UsersIcon/>
+                    <UsersIcon />
                   </ListItemIcon>
-                  <ListItemText inset primary="Users"/>
+                  <ListItemText inset primary="Users" />
                 </ListItem>
-                <ListItem button className={classes.nested}
-                          onClick={() => {browserHistory.push('/theme');}}>
+                <ListItem
+                  button
+                  className={classes.nested}
+                  onClick={() => {
+                    browserHistory.push("/theme");
+                  }}
+                >
                   <ListItemIcon>
-                    <ThemeIcon/>
+                    <ThemeIcon />
                   </ListItemIcon>
-                  <ListItemText inset primary="Theme"/>
+                  <ListItemText inset primary="Theme" />
                 </ListItem>
               </Collapse>
             </List>
           </div>
-        }
-      
+        )}
       </div>
     );
   }
 }
 
-
 SideNavigation.propTypes = {
-  classes: PropTypes.object.isRequired,
-  currentUser: PropTypes.object,
+  classes: PropTypes.object.isRequired
+  // currentUser: PropTypes.object,
 };
 
+SideNavigation.displayName = "SideNavigation";
 
-SideNavigation.displayName = 'SideNavigation';
-
-
-registerComponent('SideNavigation', SideNavigation, [withStyles, styles], withCurrentUser);
+registerComponent(
+  "SideNavigation",
+  SideNavigation,
+  [withStyles, styles],
+  withCurrentUser
+);

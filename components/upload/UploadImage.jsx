@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Components, registerComponent } from 'meteor/vulcan:lib';
 import { FormattedMessage } from 'meteor/vulcan:i18n';
-import { withStyles } from 'material-ui/styles';
-import IconButton from 'material-ui/IconButton';
-import DeleteIcon from 'mdi-material-ui/Delete';
+import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import classNames from 'classnames';
 
 /**

@@ -1,5 +1,5 @@
 Package.describe({
-  name: 'erikdakoda:vulcan-material-ui',
+  name: 'origenstudio:vulcan-material-ui',
   version: '1.10.1_8',
   summary: 'Replacement for Vulcan (http://vulcanjs.org/) components using material-ui',
   git: 'https://github.com/ErikDakoda/vulcan-material-ui',

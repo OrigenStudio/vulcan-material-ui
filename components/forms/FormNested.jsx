@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { Components, replaceComponent, addStrings } from 'meteor/vulcan:core';
 import { intlShape } from 'meteor/vulcan:i18n';
 
-import withStyles from 'material-ui/styles/withStyles';
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Tooltip from 'material-ui/Tooltip';
-import IconButton from 'material-ui/IconButton';
-import Delete from 'mdi-material-ui/Delete';
-import Plus from 'mdi-material-ui/Plus';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import Delete from '@material-ui/icons/Delete';
+import Add from '@material-ui/icons/Add';
 
 addStrings('en', {
   'forms.add': 'Add',
@@ -130,6 +130,6 @@ const IconRemove = () => <Delete/>;
 
 replaceComponent('IconRemove', IconRemove);
 
-const IconAdd = () => <Plus/>;
+const IconAdd = () => <Add/>;
 
 replaceComponent('IconAdd', IconAdd);

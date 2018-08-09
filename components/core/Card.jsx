@@ -4,9 +4,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import moment from 'moment';
-import IconButton from 'material-ui/IconButton';
-import Checkbox from 'material-ui/Checkbox';
-import EditIcon from 'mdi-material-ui/Pencil';
+import IconButton from '@material-ui/core/IconButton';
+import Checkbox from '@material-ui/core/Checkbox';
+import EditIcon from '@material-ui/icons/Edit';
 
 
 const getLabel = (field, fieldName, collection, intl) => {
