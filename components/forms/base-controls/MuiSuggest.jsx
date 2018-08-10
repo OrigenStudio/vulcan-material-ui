@@ -108,13 +108,13 @@ const styles = theme => ({
   },
 });
 
-
+// TODO MuiSuggest: convert to ES6 class
 const MuiSuggest = createReactClass({
-  
+
   element: null,
-  
+
   mixins: [ComponentMixin],
-  
+
   propTypes: {
     options: PropTypes.arrayOf(PropTypes.shape({
       label: PropTypes.string,
@@ -127,16 +127,16 @@ const MuiSuggest = createReactClass({
     showAllOptions: PropTypes.bool,
     className: PropTypes.string,
   },
-  
+
   getOptionLabel: function (option) {
     return option.label || option.value || '';
   },
-  
+
   getInitialState: function () {
     if (this.props.refFunction) {
       this.props.refFunction(this);
     }
-  
+
     const selectedOption = this.getSelectedOption();
     return {
       inputValue: this.getOptionLabel(selectedOption),
@@ -144,7 +144,7 @@ const MuiSuggest = createReactClass({
       suggestions: [],
     };
   },
-  
+
   componentWillReceiveProps: function (nextProps) {
     if (nextProps.value !== this.state.value ||
       nextProps.options !== this.props.options) {
@@ -155,22 +155,22 @@ const MuiSuggest = createReactClass({
       });
     }
   },
-  
+
   shouldComponentUpdate: function (nextProps, nextState) {
     return !_isEqual(nextState, this.state) ||
       nextProps.help !== this.props.help ||
       nextProps.options !== this.props.options;
   },
-  
+
   getSelectedOption: function (props) {
     props = props || this.props;
     const selectedOption = props.options.find((opt) => opt.value === props.value);
     return selectedOption || { label: '', value: null };
   },
-  
+
   handleBlur: function (event, { highlightedSuggestion: suggestion }) {
     event.persist();
-    
+
     if (suggestion) {
       this.changeValue(suggestion);
     } else if (this.props.limitToList) {
@@ -180,17 +180,17 @@ const MuiSuggest = createReactClass({
       });
     }
   },
-  
+
   suggestionSelected: function (event, { suggestion }) {
     event.preventDefault();
-    
+
     this.changeValue(suggestion);
-    
+
     if (this.props.showAllOptions) {
       setTimeout(() => {document.activeElement.blur();});
     }
   },
-  
+
   changeValue: function (suggestion) {
     if (!suggestion) {
       suggestion = { label: '', value: null };
@@ -201,33 +201,33 @@ const MuiSuggest = createReactClass({
     });
     this.props.onChange(this.props.name, suggestion.value, this.getOptionLabel(suggestion));
   },
-  
+
   handleInputChange: function (event) {
     const value = event.target.value;
     this.setState({
       inputValue: value,
     });
   },
-  
+
   handleSuggestionsFetchRequested: function ({ value }) {
     this.setState({
       suggestions: this.getSuggestions(value),
     });
   },
-  
+
   handleSuggestionsClearRequested: function () {
     this.setState({
       suggestions: [],
     });
   },
-  
+
   shouldRenderSuggestions: function (value) {
     return true;
   },
-  
+
   render: function () {
     const value = this.props.value;
-    
+
     const startAdornment = hideStartAdornment(this.props) ? null :
       <StartAdornment {...this.props}
                       value={value}
@@ -239,13 +239,13 @@ const MuiSuggest = createReactClass({
                     classes={null}
                     changeValue={this.changeValue}
       />;
-    
+
     const element = this.renderElement(startAdornment, endAdornment);
-    
+
     if (this.props.layout === 'elementOnly') {
       return element;
     }
-    
+
     return (
       <MuiFormControl{...this.getFormControlProperties()} htmlFor={this.getId()}>
         {element}
@@ -253,10 +253,10 @@ const MuiSuggest = createReactClass({
       </MuiFormControl>
     );
   },
-  
+
   renderElement: function (startAdornment, endAdornment) {
     const { classes, autoFocus, disableText } = this.props;
-    
+
     return (
       <Autosuggest
         theme={{
@@ -293,10 +293,10 @@ const MuiSuggest = createReactClass({
       />
     );
   },
-  
+
   renderInputComponent: function (inputProps) {
     const { classes, autoFocus, autoComplete, value, ref, startAdornment, endAdornment, ...rest } = inputProps;
-    
+
     return (
       <Input
         autoFocus={autoFocus}
@@ -317,14 +317,14 @@ const MuiSuggest = createReactClass({
       />
     );
   },
-  
+
   renderSuggestion: function (suggestion, { query, isHighlighted }) {
     const label = this.getOptionLabel(suggestion);
     const matches = match(label, query);
     const parts = parse(label, matches);
     const isSelected = suggestion.value === this.props.value;
     const className = isSelected ? this.props.classes.selected : null;
-    
+
     return (
       <MenuItem selected={isHighlighted} component="div" className={className}>
         {
@@ -349,10 +349,10 @@ const MuiSuggest = createReactClass({
       </MenuItem>
     );
   },
-  
+
   renderSuggestionsContainer: function ({ containerProps, children }) {
     const { classes } = this.props;
-    
+
     return (
       <Paper {...containerProps} square>
         <IsolatedScroll className={classes.scroller}>
@@ -361,50 +361,50 @@ const MuiSuggest = createReactClass({
       </Paper>
     );
   },
-  
+
   getSuggestionValue: function (suggestion) {
     return suggestion.value;
   },
-  
+
   getSuggestions: function (value) {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
     let count = 0;
     const inputMatchesSelection = value === this.getOptionLabel(this.state.selectedOption);
-    
+
     return (this.props.disableText || this.props.showAllOptions) && inputMatchesSelection ?
-      
+
       this.props.options.filter(suggestion => {
         return true;
       })
-      
+
       :
-      
+
       inputLength === 0
-        
+
         ?
-        
+
         this.props.options.filter(suggestion => {
           count += 1;
           return count <= maxSuggestions;
         })
-        
+
         :
-        
+
         this.props.options.filter(suggestion => {
           const label = this.getOptionLabel(suggestion);
           const keep =
             count < maxSuggestions && label.toLowerCase().slice(0, inputLength) ===
             inputValue;
-          
+
           if (keep) {
             count += 1;
           }
-          
+
           return keep;
         });
   },
-  
+
 });
 
 

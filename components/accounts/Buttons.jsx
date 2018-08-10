@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Components, replaceComponent } from 'meteor/vulcan:core';
-import { CardActions } from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 

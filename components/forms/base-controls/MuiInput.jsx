@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import withStyles from '@material-ui/core/styles/withStyles';
-import ComponentMixin from './mixins/component';
+import Input from '@material-ui/core/Input';
+
+import StartAdornment, { hideStartAdornment, fixUrl } from './StartAdornment';
+import { FormComponentShape } from '../helpers/propTypesShapes';
+import { cleanProps, getFormControlProperties, getFormHelperProperties, getId } from '../helpers';
 import MuiFormControl from './MuiFormControl';
 import MuiFormHelper from './MuiFormHelper';
-import Input from '@material-ui/core/Input';
-import StartAdornment, { hideStartAdornment, fixUrl } from './StartAdornment';
 import EndAdornment from './EndAdornment';
 
 
@@ -22,14 +23,9 @@ export const styles = theme => ({
 
 
 //noinspection JSUnusedGlobalSymbols
-const MuiInput = createReactClass({
-  element: null,
-  
-  mixins: [ComponentMixin],
-  
-  displayName: 'MuiInput',
-  
-  propTypes: {
+class MuiInput extends React.PureComponent {
+  static propTypes = {
+    ...FormComponentShape,
     type: PropTypes.oneOf([
       'color',
       'date',
@@ -48,34 +44,31 @@ const MuiInput = createReactClass({
       'url',
       'week'
     ]),
-    errors: PropTypes.array,
     placeholder: PropTypes.string,
-  },
-  
-  getDefaultProps: function () {
-    return {
-      type: 'text',
-    };
-  },
-  
-  handleChange: function (event) {
+  };
+
+  static defaultProps = {
+    type: 'text',
+  };
+
+  handleChange = (event) => {
     const value = event.target.value;
     this.changeValue(value);
-  },
-  
-  changeValue: function (value) {
+  };
+
+  changeValue = (value) => {
     this.props.onChange(this.props.name, value);
-  },
-  
-  handleBlur: function (event) {
+  };
+
+  handleBlur = (event) => {
     const { type, value } = this.props;
-    
+
     if (type === 'url' && !!value && value !== fixUrl(value)) {
-        this.changeValue(fixUrl(value))
+      this.changeValue(fixUrl(value));
     }
-  },
-  
-  render: function () {
+  };
+
+  render () {
     const startAdornment = hideStartAdornment(this.props) ? null :
       <StartAdornment {...this.props}
                       classes={null}
@@ -86,30 +79,30 @@ const MuiInput = createReactClass({
                     classes={null}
                     changeValue={this.changeValue}
       />;
-    
+
     let element = this.renderElement(startAdornment, endAdornment);
-    
+
     if (this.props.layout === 'elementOnly' || this.props.type === 'hidden') {
       return element;
     }
-    
+
     return (
-      <MuiFormControl {...this.getFormControlProperties()} htmlFor={this.getId()}>
+      <MuiFormControl {...getFormControlProperties(this.props)}>
         {element}
-        <MuiFormHelper {...this.getFormHelperProperties()}/>
+        <MuiFormHelper {...getFormHelperProperties(this.props)}/>
       </MuiFormControl>
     );
-  },
-  
-  renderElement: function (startAdornment, endAdornment) {
+  }
+
+  renderElement(startAdornment, endAdornment) {
     const { classes, disabled, autoFocus, value } = this.props;
     const options = this.props.options || {};
-    
+
     return (
       <Input
         ref={c => (this.element = c)}
-        {...this.cleanProps(this.props)}
-        id={this.getId()}
+        {...cleanProps(this.props)}
+        id={getId(this.props)}
         value={value}
         onChange={this.handleChange}
         onBlur={this.handleBlur}
@@ -122,10 +115,7 @@ const MuiInput = createReactClass({
         classes={{ root: classes.inputRoot, focused: classes.inputFocused }}
       />
     );
-  },
-  
-  
-});
-
+  }
+}
 
 export default withStyles(styles)(MuiInput);

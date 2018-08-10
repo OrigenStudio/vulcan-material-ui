@@ -1,60 +1,62 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
-import ComponentMixin from './mixins/component';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+
 import MuiFormControl from './MuiFormControl';
 import MuiFormHelper from './MuiFormHelper';
+import { FormComponentShape } from '../helpers/propTypesShapes';
+import {
+  cleanProps,
+  cleanSwitchProps,
+  getFormControlProperties,
+  getFormHelperProperties,
+  getId,
+} from '../helpers';
 
 
-const MuiSwitch = createReactClass({
-  
-  mixins: [ComponentMixin],
-  
-  getDefaultProps: function () {
-    return {
-      label: '',
-      rowLabel: '',
-      value: false
-    };
-  },
-  
-  changeValue: function (event) {
+class MuiSwitch extends React.PureComponent {
+  static propTypes = {
+    ...FormComponentShape,
+  };
+
+  static defaultProps = {
+    label: '',
+    rowLabel: '',
+    value: false,
+  };
+
+  changeValue = (event) => {
     const target = event.target;
     const value = target.checked;
-    
-    //this.setValue(value);
+
     this.props.onChange(this.props.name, value);
-    
+
     setTimeout(() => {document.activeElement.blur();});
-  },
-  
-  render: function () {
-    
+  };
+
+  render() {
     const element = this.renderElement();
-    
+
     if (this.props.layout === 'elementOnly') {
       return element;
     }
-    
+
     return (
-      <MuiFormControl {...this.getFormControlProperties()} label={this.props.rowLabel}
-        htmlFor={this.getId()}
-      >
+      <MuiFormControl {...getFormControlProperties(this.props)} label={this.props.rowLabel}>
         {element}
-        <MuiFormHelper {...this.getFormHelperProperties()}/>
+        <MuiFormHelper {...getFormHelperProperties(this.props)}/>
       </MuiFormControl>
     );
-  },
-  
-  renderElement: function () {
+  }
+
+  renderElement() {
     return (
       <FormControlLabel
         control={
           <Switch
             ref={(c) => this.element = c}
-            {...this.cleanSwitchProps(this.cleanProps(this.props))}
-            id={this.getId()}
+            {...cleanSwitchProps(cleanProps(this.props))}
+            id={getId(this.props)}
             checked={this.props.value === true}
             onChange={this.changeValue}
             disabled={this.props.disabled}
@@ -63,9 +65,8 @@ const MuiSwitch = createReactClass({
         label={this.props.label}
       />
     );
-  },
-  
-});
+  }
 
+}
 
 export default MuiSwitch;
