@@ -1,38 +1,41 @@
-import React from 'react';
-import { addCallback } from 'meteor/vulcan:core';
-import JssProvider from 'react-jss/lib/JssProvider';
-import { MuiThemeProvider, createGenerateClassName } from '@material-ui/core/styles';
+import React from "react";
+import { addCallback } from "meteor/vulcan:core";
+import JssProvider from "react-jss/lib/JssProvider";
+import {
+  MuiThemeProvider,
+  createGenerateClassName
+} from "@material-ui/core/styles";
 //import createGenerateClassName from './createGenerateClassName';
-import { getCurrentTheme } from '../modules/themes';
-import { SheetsRegistry } from 'react-jss/lib/jss';
-import JssCleanup from '../components/theme/JssCleanup';
+import { getCurrentTheme } from "../modules/themes";
+import { SheetsRegistry } from "react-jss/lib/jss";
+import JssCleanup from "../components/theme/JssCleanup";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
-
-function wrapWithMuiTheme (app, { req, res, store, apolloClient }) {
+function wrapWithMuiTheme(app, { req, res, store, apolloClient }) {
   const sheetsRegistry = new SheetsRegistry();
   req.sheetsRegistry = sheetsRegistry;
   const generateClassName = createGenerateClassName();
   const theme = getCurrentTheme();
-  
+
   return (
-    <JssProvider registry={sheetsRegistry} generateClassName={generateClassName}>
+    <JssProvider
+      registry={sheetsRegistry}
+      generateClassName={generateClassName}
+    >
       <MuiThemeProvider theme={theme} sheetsManager={new Map()}>
-        <JssCleanup>
-          {app}
-        </JssCleanup>
+        <CssBaseline />
+        <JssCleanup>{app}</JssCleanup>
       </MuiThemeProvider>
     </JssProvider>
   );
 }
 
-
-function injectJss ({ req, res }) {
+function injectJss({ req, res }) {
   const sheets = req.sheetsRegistry.toString();
-  
-  req.dynamicHead = req.dynamicHead || '';
+
+  req.dynamicHead = req.dynamicHead || "";
   req.dynamicHead += `<style id="jss-server-side">${sheets}</style>`;
 }
 
-
-addCallback('router.server.wrapper', wrapWithMuiTheme);
-addCallback('router.server.postRender', injectJss);
+addCallback("router.server.wrapper", wrapWithMuiTheme);
+addCallback("router.server.postRender", injectJss);
