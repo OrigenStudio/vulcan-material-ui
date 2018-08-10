@@ -50,7 +50,7 @@ mongo-dev-server@1.1.0
 mongo-id@1.0.7
 npm-mongo@3.0.7
 ordered-dict@1.1.0
-origenstudio:vulcan-material-ui@0.0.1
+origenstudio:vulcan-material-ui@0.0.2
 percolatestudio:synced-cron@1.1.0
 promise@0.11.1
 random@1.1.0
