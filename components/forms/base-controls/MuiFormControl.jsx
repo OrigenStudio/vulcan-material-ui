@@ -1,13 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import createReactClass from "create-react-class";
-import { InputLabel } from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 
 //noinspection JSUnusedGlobalSymbols
-const MuiFormControl = createReactClass({
-  propTypes: {
+class MuiFormControl extends React.PureComponent {
+  static propTypes = {
     label: PropTypes.node,
     children: PropTypes.node,
     required: PropTypes.bool,
@@ -16,26 +15,24 @@ const MuiFormControl = createReactClass({
     hideLabel: PropTypes.bool,
     layout: PropTypes.oneOf(["horizontal", "vertical", "elementOnly"]),
     htmlFor: PropTypes.string
-  },
+  };
 
-  getDefaultProps: function() {
-    return {
-      label: "",
-      required: false,
-      hasErrors: false,
-      fakeLabel: false,
-      hideLabel: false
-    };
-  },
+  static defaultProps = {
+    label: "",
+    required: false,
+    hasErrors: false,
+    fakeLabel: false,
+    hideLabel: false
+  };
 
-  renderRequiredSymbol: function() {
-    if (this.props.required === false) {
+  renderRequiredSymbol() {
+    if (this.props.optional === true || this.props.required === false) {
       return null;
     }
     return <span className="required-symbol"> *</span>;
-  },
+  }
 
-  renderLabel: function() {
+  renderLabel() {
     if (this.props.layout === "elementOnly" || this.props.hideLabel) {
       return null;
     }
@@ -63,9 +60,9 @@ const MuiFormControl = createReactClass({
         {this.renderRequiredSymbol()}
       </InputLabel>
     );
-  },
+  }
 
-  render: function() {
+  render() {
     const { layout, className, children, hasErrors } = this.props;
 
     if (layout === "elementOnly") {
@@ -84,6 +81,6 @@ const MuiFormControl = createReactClass({
       </FormControl>
     );
   }
-});
+}
 
 export default MuiFormControl;
