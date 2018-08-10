@@ -1,73 +1,70 @@
-import withStyles from '@material-ui/core/styles/withStyles';
 import React from 'react';
-import createReactClass from 'create-react-class';
-import ComponentMixin from './mixins/component';
-import MuiFormControl from './MuiFormControl';
-import MuiFormHelper from './MuiFormHelper';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
-import { MenuItem, MenuList } from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import withStyles from '@material-ui/core/styles/withStyles';
+import _isArray from 'lodash/isArray';
+
+import MuiFormControl from './MuiFormControl';
+import MuiFormHelper from './MuiFormHelper';
 import StartAdornment, { hideStartAdornment } from './StartAdornment';
 import EndAdornment from './EndAdornment';
-import _isArray from 'lodash/isArray';
+import { cleanProps, getFormControlProperties, getFormHelperProperties, getId } from '../helpers';
+import { FormComponentShape } from '../helpers/propTypesShapes';
 
 
 export const styles = theme => ({
-
   inputRoot: {
     '& .clear-enabled': { opacity: 0 },
     '&:hover .clear-enabled': { opacity: 0.54 },
   },
-
   inputFocused: {
     '& .clear-enabled': { opacity: 0.54 }
   },
-
-  menuItem: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    paddingLeft: 9,
-    fontFamily: theme.typography.fontFamily,
-    color: theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.87)' : theme.palette.common.white,
-    fontSize: theme.typography.pxToRem(16),
-    lineHeight: '1.1875em',
+  menuItem: {},
+  menuList: {
+    '&:last-child': {
+      paddingBottom: 0,
+    },
   },
-
-  input: {
-    paddingLeft: 8,
+  menuListSubheader: {
+    paddingLeft: theme.spacing.unit * 2,
+    paddingRight: theme.spacing.unit * 2,
   },
-
+  input: {},
 });
 
 
-const MuiSelect = createReactClass({
+class MuiSelect extends React.PureComponent {
+  static propTypes = {
+    ...FormComponentShape,
+  };
 
-  element: null,
+  constructor(...args) {
+    super(...args);
 
-  mixins: [ComponentMixin],
-
-  getInitialState: function () {
-    return {
+    this.state = {
       isOpen: false,
     };
-  },
+  }
 
-  handleOpen: function () {
+  handleOpen = () => {
     // this doesn't work
     this.setState({
       isOpen: true,
     });
-  },
+  };
 
-  handleClose: function () {
+  handleClose = () => {
     // this doesn't work
     this.setState({
       isOpen: false,
     });
-  },
+  };
 
-  handleChange: function (event) {
+  handleChange = (event) => {
     const target = event.target;
     let value;
     if (this.props.multiple) {
@@ -82,85 +79,104 @@ const MuiSelect = createReactClass({
       value = target.value;
     }
     this.changeValue(value);
-  },
+  };
 
-  changeValue: function (value) {
+  changeValue = (value) => {
     this.props.onChange(this.props.name, value);
-  },
+  };
 
-  render: function () {
+  render() {
     if (this.props.layout === 'elementOnly') {
       return this.renderElement();
     }
 
     return (
-      <MuiFormControl{...this.getFormControlProperties()} htmlFor={this.getId()}>
+      <MuiFormControl{...getFormControlProperties(this.props)}>
         {this.renderElement()}
-        <MuiFormHelper {...this.getFormHelperProperties()}/>
+        <MuiFormHelper {...getFormHelperProperties(this.props)}/>
       </MuiFormControl>
     );
-  },
+  }
 
-  renderElement: function () {
-    const renderOption = (item, key) => {
-      //eslint-disable-next-line no-unused-vars
-      const { group, label, ...rest } = item;
-      return this.props.native
-        ?
-        <option key={key} {...rest}>{label}</option>
-        :
-        <MenuItem key={key} {...rest} className={classes.menuItem}>{label}</MenuItem>;
-    };
+  renderOption(item, key) {
+    //eslint-disable-next-line no-unused-vars
+    const { group, label, ...rest } = item;
+    return this.props.native
+      ? (
+        <option key={key} {...rest}>
+          {label}
+        </option>
+      ) : (
+        <MenuItem key={key} {...rest} className={this.props.classes.menuItem}>
+          {label}
+        </MenuItem>
+      );
+  }
 
-    const renderGroup = (label, key, nodes) => {
-      return this.props.native
-        ?
+  renderGroup(label, key, nodes) {
+    return this.props.native
+      ? (
         <optgroup label={label} key={key}>
           {nodes}
         </optgroup>
-        :
-        <MenuList subheader={<ListSubheader component="div">{label}</ListSubheader>} key={key}>
+      ) : (
+        <MenuList
+          key={key}
+          className={this.props.classes.menuList}
+          disabled
+          subheader={(
+            <ListSubheader
+              component="div"
+              disabled
+              className={this.props.classes.menuListSubheader}
+            >
+              {label}
+            </ListSubheader>
+          )}
+        >
           {nodes}
-        </MenuList>;
-    };
+        </MenuList>
+      );
+  }
 
+  renderElement() {
     const { options, classes } = this.props;
 
-    let groups = options.filter(function (item) {
-      return item.group;
-    }).map(function (item) {
-      return item.group;
-    });
-    // Get the unique items in group.
-    groups = [...new Set(groups)];
+    const groups = Array.from(
+      options.reduce(
+        (reduced, item) => {
+          if (item.group) {
+            reduced.add(item.group);
+          }
+          return reduced;
+        },
+        new Set(),
+      ),
+    );
 
     let optionNodes = [];
 
     if (groups.length === 0) {
-      optionNodes = options.map(function (item, index) {
-        return renderOption(item, index);
-      });
+      optionNodes = options.map((item, index) => this.renderOption(item, index));
     } else {
       // For items without groups.
       const itemsWithoutGroup = options.filter(function (item) {
         return !item.group;
       });
 
-      itemsWithoutGroup.forEach(function (item, index) {
-        optionNodes.push(renderOption(item, 'no-group-' + index));
+      itemsWithoutGroup.forEach((item, index) => {
+        optionNodes.push(this.renderOption(item, 'no-group-' + index));
       });
 
-      groups.forEach(function (group, groupIndex) {
+      groups.forEach((group, groupIndex) => {
 
-        const groupItems = options.filter(function (item) {
-          return item.group === group;
-        });
+        const groupItems = options.filter((item) => item.group === group);
 
-        const groupOptionNodes = groupItems.map(function (item, index) {
-          return renderOption(item, groupIndex + '-' + index);
-        });
+        const groupOptionNodes = groupItems.map((item, index) =>
+          this.renderOption(item, groupIndex + '-' + index),
+        );
 
-        optionNodes.push(renderGroup(group, groupIndex, groupOptionNodes));
+        optionNodes.push(this.renderGroup(group, groupIndex, groupOptionNodes));
       });
     }
 
@@ -183,13 +199,13 @@ const MuiSelect = createReactClass({
     return (
       <Select className="select"
               ref={(c) => this.element = c}
-              {...this.cleanProps(this.props)}
+              {...cleanProps(this.props)}
               value={value}
               onChange={this.handleChange}
               onOpen={this.handleOpen}
               onClose={this.handleClose}
               disabled={this.props.disabled}
-              input={<Input id={this.getId()}
+              input={<Input id={getId(this.props)}
                             startAdornment={startAdornment}
                             endAdornment={endAdornment}
                             classes={{
@@ -203,7 +219,6 @@ const MuiSelect = createReactClass({
       </Select>
     );
   }
-});
-
+}
 
 export default withStyles(styles)(MuiSelect);
