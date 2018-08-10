@@ -10,6 +10,7 @@ import { getCurrentTheme } from "../modules/themes";
 import { SheetsRegistry } from "react-jss/lib/jss";
 import JssCleanup from "../components/theme/JssCleanup";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import {Helmet} from 'react-helmet';
 
 function wrapWithMuiTheme(app, { req, res, store, apolloClient }) {
   const sheetsRegistry = new SheetsRegistry();
@@ -23,6 +24,12 @@ function wrapWithMuiTheme(app, { req, res, store, apolloClient }) {
       generateClassName={generateClassName}
     >
       <MuiThemeProvider theme={theme} sheetsManager={new Map()}>
+        <Helmet>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+          />
+        </Helmet> 
         <CssBaseline />
         <JssCleanup>{app}</JssCleanup>
       </MuiThemeProvider>
