@@ -9,10 +9,12 @@ import './bonus/SearchInput';
 import './bonus/TooltipIntl';
 import './bonus/TooltipIconButton';
 
+import './core/Button';
 import './core/Card';
 import './core/Datatable';
 import './core/EditButton';
 import './core/Loading';
+import './core/LoadingButton';
 import './core/ModalTrigger';
 import './core/NewButton';
 

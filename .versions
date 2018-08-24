@@ -19,7 +19,7 @@ ddp-rate-limiter@1.0.7
 ddp-server@2.2.0
 deps@1.0.12
 diff-sequence@1.1.0
-dynamic-import@0.4.0
+dynamic-import@0.4.2
 ecmascript@0.11.1
 ecmascript-runtime@0.7.0
 ecmascript-runtime-client@0.7.1
@@ -50,7 +50,7 @@ mongo-dev-server@1.1.0
 mongo-id@1.0.7
 npm-mongo@3.0.7
 ordered-dict@1.1.0
-origenstudio:vulcan-material-ui@0.0.1
+origenstudio:vulcan-material-ui@0.0.3
 percolatestudio:synced-cron@1.1.0
 promise@0.11.1
 random@1.1.0
@@ -81,6 +81,7 @@ vulcan:forms@1.11.2
 vulcan:i18n@1.11.2
 vulcan:lib@1.11.2
 vulcan:routing@1.11.2
+vulcan:ui-bootstrap@1.11.2
 vulcan:users@1.11.2
 webapp@1.6.0
 webapp-hashing@1.0.9
