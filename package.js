@@ -1,6 +1,6 @@
 Package.describe({
   name: 'origenstudio:vulcan-material-ui',
-  version: '0.0.2',
+  version: '0.0.3',
   summary: 'Replacement for Vulcan (http://vulcanjs.org/) components using material-ui',
   git: 'https://github.com/ErikDakoda/vulcan-material-ui',
   documentation: 'README.md'
