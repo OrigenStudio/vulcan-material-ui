@@ -41,17 +41,6 @@ export const getTheme = (name) => {
 };
 
 /**
- * Set a theme registered with registerTheme()
- *
- * @param {String} name The name of the theme to set
- * 
- */
-export const setTheme = (name) => {
-  registerSetting('muiTheme', name, 'Current Material UI theme used by origenstudio:vulcan-material-ui')
-};
-
-
-/**
  * Get the theme specified in the 'muiTheme' setting
  * 
  * @returns {Object}
