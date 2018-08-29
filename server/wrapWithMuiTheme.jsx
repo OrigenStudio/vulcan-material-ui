@@ -11,12 +11,14 @@ import { SheetsRegistry } from "react-jss/lib/jss";
 import JssCleanup from "../components/theme/JssCleanup";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import {Helmet} from 'react-helmet';
+import getGoogleFontLoadString from '../modules/fonts';
 
 function wrapWithMuiTheme(app, { req, res, store, apolloClient }) {
   const sheetsRegistry = new SheetsRegistry();
   req.sheetsRegistry = sheetsRegistry;
   const generateClassName = createGenerateClassName();
   const theme = getCurrentTheme();
+  const font = getGoogleFontLoadString();
 
   return (
     <JssProvider
@@ -27,7 +29,7 @@ function wrapWithMuiTheme(app, { req, res, store, apolloClient }) {
         <Helmet>
           <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+            href={font}
           />
         </Helmet> 
         <CssBaseline />

@@ -5,15 +5,18 @@ import { getCurrentTheme } from "../modules/themes";
 import JssCleanup from "../components/theme/JssCleanup";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { Helmet } from "react-helmet";
+import getGoogleFontLoadString from '../modules/fonts';
 
 function wrapWithMuiTheme(app) {
   const theme = getCurrentTheme();
+  const font = getGoogleFontLoadString();
+
   return (
     <MuiThemeProvider theme={theme}>
       <Helmet>
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+          href={font}
         />
       </Helmet>
       <CssBaseline />
