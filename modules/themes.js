@@ -40,7 +40,6 @@ export const getTheme = (name) => {
   return createMuiTheme(themeInfo.theme);
 };
 
-
 /**
  * Get the theme specified in the 'muiTheme' setting
  * 
